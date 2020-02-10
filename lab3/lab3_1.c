@@ -82,7 +82,6 @@ int main()
             }
         }
         //end of input
-        recv_ans = (float*)malloc(sizeof(float)*col*(size_arr+1));
         startTime = MPI_Wtime(); //start timer
         current_arr = 0;
         printf("%d",size);
@@ -126,6 +125,7 @@ int main()
             size_arr = to-from;
             temp_a = (float*)malloc(sizeof(float)*col*(size_arr+1));
             temp_b = (float*)malloc(sizeof(float)*col*(size_arr+1));
+            recv_ans = (float*)malloc(sizeof(float)*col*(size_arr+1));
             temp_a = cpy_array(arr_a,size_arr,from);
             temp_b = cpy_array(arr_b,size_arr,from);
             MPI_Send(&send_msg, 100, MPI_CHAR, i, 0, MPI_COMM_WORLD);
