@@ -83,6 +83,7 @@ int main()
             }
         }
         //end of input
+        recv_ans = (float*)malloc(sizeof(float)*col*(size_arr+1));
         startTime = MPI_Wtime(); //start timer
         current_arr = 0;
         printf("%d",size);
@@ -93,11 +94,18 @@ int main()
             {
                 for(int t=0;t<col;t++)
                 {
+                    recv_ans[i][t] = arr_a[i][t]+arr_b[i][t];
+                }
+            }
+            endTime = MPI_Wtime();
+            for(i=0;i<row;i++)
+            {
+                for(int t=0;t<col;t++)
+                {
                     fprintf(output,"%.1f ",arr_a[i][t]+arr_b[i][t]);
                 }
                 fprintf(output,"\n");
             }
-            endTime = MPI_Wtime();
             printf("Write Answer complete\n");
             printf("Processor : %d\nTime (sec) : %.4f\n", size, endTime - startTime);
             MPI_Finalize();
@@ -121,7 +129,6 @@ int main()
             temp_b = (float*)malloc(sizeof(float)*col*(size_arr+1));
             temp_a = cpy_array(arr_a,size_arr,from);
             temp_b = cpy_array(arr_b,size_arr,from);
-            recv_ans = (float*)malloc(sizeof(float)*col*(size_arr+1));
             MPI_Send(&send_msg, 100, MPI_CHAR, i, 0, MPI_COMM_WORLD);
             printf("Send Msg complete\n");
             MPI_Send(&(temp_a[0]), col*(size_arr+1), MPI_FLOAT, i, 1, MPI_COMM_WORLD); //send arr_a
@@ -143,6 +150,7 @@ int main()
         {
             MPI_Wait(&request[i], MPI_STATUS_IGNORE);
         }
+        endTime = MPI_Wtime();
         for(i=0;i<row;i++)
         {
             for(int t=0;t<col;t++)
@@ -151,7 +159,6 @@ int main()
             }
             fprintf(output,"\n");
         }
-        endTime = MPI_Wtime();
         printf("Write Answer complete\n");
         printf("Processor : %d\nTime (sec) : %.4f\n", size, endTime - startTime);
         fclose(output);
